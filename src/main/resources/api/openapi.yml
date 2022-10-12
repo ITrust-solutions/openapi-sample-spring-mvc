@@ -1,0 +1,114 @@
+openapi: "3.0.0"
+info:
+  title: OpenApi Sample
+  description: Operations defined for users
+  contact:
+    name: Karol Bryzgiel
+    email: karol.bryzgiel@soft-project.pl
+  version: "1.0"
+tags:
+  - name: User
+    description: 'API operations on Users'
+  - name: Address
+    description: 'API operations on adresses'
+paths:
+  /users:
+    get:
+      summary: List all users
+      operationId: listUsers
+      tags:
+        - User
+      responses:
+        '200':
+          description: 'OK'
+    post:
+      summary: Create new user
+      operationId: createUser
+      tags:
+        - User
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserDto'
+            example:
+              name: 'Karol'
+              userType: 'BASIC'
+      responses:
+        '200':
+          description: 'OK'
+    put:
+      summary: Create new user
+      operationId: updateUser
+      tags:
+        - User
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserDto'
+            example:
+              name: 'Karol'
+              userType: 'BASIC'
+      responses:
+        '200':
+          description: 'OK'
+  /users/{id}:
+    get:
+      summary: Get user by ID
+      operationId: getUserById
+      tags:
+        - User
+      parameters:
+        - in: path #"enum" : [ "path", "query", "cookie", "header" ]
+          name: id
+          schema:
+            type: string
+          required: true
+          description: 'User Id to fetch'
+      responses:
+        '200':
+          description: 'Created'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: The specified user ID is invalid (not a number).
+        '404':
+          description: A user with the specified ID was not found.
+        default:
+          description: Unexpected error
+components:
+  schemas:
+    UserDto:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          type: string
+        userType:
+          $ref: '#/components/schemas/UserType'
+    User:
+      x-class-extra-annotation: '@org.jetbrains.annotations.NotNull'
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          x-field-extra-annotation: '@org.jetbrains.annotations.NotNull'
+          type: integer
+          format: int64
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+    UserType:
+      type: string
+      enum:
+        - BASIC
+        - PREMIUM
